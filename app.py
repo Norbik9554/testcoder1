@@ -17,7 +17,14 @@ COUCHDB_DB = "sensor_data"
 
 # 🔧 Połączenie z bazą
 couch = couchdb.Server(COUCHDB_URL)
+
 if COUCHDB_DB not in couch:
+    try:
+        db = couch.create(COUCHDB_DB)
+    except Exception as e:
+        print(f"Database connection failed: {e}")
+
+
     db = couch.create(COUCHDB_DB)
 else:
     db = couch[COUCHDB_DB]
