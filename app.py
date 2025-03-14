@@ -1,6 +1,7 @@
 import os
 import json
 import firebase_admin
+import traceback
 from firebase_admin import credentials, firestore
 from flask import Flask, request, jsonify, render_template
 
@@ -16,7 +17,12 @@ db = firestore.client()
 
 @app.route("/", methods=["GET"])
 def home():
-    return render_template("index.html")  # Renderowanie strony głównej
+    try:
+        return render_template("index.html")
+    except Exception as e:
+        error_message = f"Błąd renderowania strony: {str(e)}\n{traceback.format_exc()}"
+        print(error_message)
+        return jsonify({"error": error_message}), 500
 
 @app.route("/dodaj", methods=["POST"])
 def dodaj():
