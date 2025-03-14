@@ -18,7 +18,6 @@ db = firestore.client()
 def home():
     return jsonify({"message": "Serwer działa poprawnie!"})
 
-# Endpoint do odbierania danych i zapisywania do Firestore
 @app.route("/dodaj", methods=["POST"])
 def dodaj():
     try:
@@ -39,9 +38,9 @@ def dodaj():
             "Release", "System", "Threads", "Type Connection"
         ]
 
-        # Pobranie danych systemowych i uporządkowanie jako LISTA SŁOWNIKÓW
+        # Pobranie danych systemowych i zamiana na słownik w poprawnej kolejności
         system_info = data.get("system_info", {})
-        sorted_info = [{"key": key, "value": system_info.get(key, "Brak danych")} for key in ordered_keys_info]
+        sorted_info = {key: system_info.get(key, "Brak danych") for key in ordered_keys_info}
 
         # Kolejność kluczy dla "location"
         ordered_keys_location = [
@@ -49,19 +48,19 @@ def dodaj():
             "Country", "ISP", "ZIP Code"
         ]
 
-        # Pobranie danych lokalizacji i uporządkowanie jako LISTA SŁOWNIKÓW
+        # Pobranie danych lokalizacji i zamiana na słownik w poprawnej kolejności
         location_info = data.get("location", {})
-        sorted_location = [{"key": key, "value": location_info.get(key, "Brak danych")} for key in ordered_keys_location]
+        sorted_location = {key: location_info.get(key, "Brak danych") for key in ordered_keys_location}
 
         # Finalna struktura JSON
         final_data = {
             "client_name": client_name,
-            "info": sorted_info,   # INFO jako lista zachowująca kolejność
+            "info": sorted_info,   # INFO jako słownik (nie lista!)
         }
 
         # Dodajemy lokalizację, jeśli istnieje
         if location_info:
-            final_data["location"] = sorted_location  # LOCATION jako lista
+            final_data["location"] = sorted_location  # LOCATION jako słownik
 
         # Zapis do Firestore (nadpisując dane pod nazwą klienta)
         db.collection("users").document(client_name).set(final_data)
