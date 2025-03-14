@@ -25,14 +25,18 @@ def dodaj():
         data = request.json  # Pobranie danych z żądania
         if not data:
             return jsonify({"error": "Brak danych"}), 400
-
-        print("Otrzymano dane:", data)
-
-        # Zapis do Firestore (kolekcja "users")
-        doc_ref = db.collection("users").add(data)
-
-        return jsonify({"message": "Dane zapisane!", "id": doc_ref[1].id})
-
+        
+        client_name = data.get("client_name")
+        if not client_name:
+            return jsonify({"error": "Brak nazwy klienta"}), 400
+        
+        print("Otrzymano dane od:", client_name)
+        
+        # Zapis do Firestore (kolekcja "users"), nadpisując dane pod nazwą klienta
+        db.collection("users").document(client_name).set(data)
+        
+        return jsonify({"message": "Dane zapisane!", "id": client_name})
+    
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
