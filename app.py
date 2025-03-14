@@ -18,6 +18,13 @@ db = firestore.client()
 def home():
     return jsonify({"message": "Serwer działa poprawnie!"})
 
+# Lista uporządkowanych kluczy
+ordered_keys = [
+    "Computer Name", "Hostname", "System", "Release", "Architecture",
+    "CPU Processor", "Cores", "Threads", "GPU Processor", "RAM (Gb)",
+    "Disks", "Type Connection", "IP Address"
+]
+
 # Endpoint do odbierania danych i zapisywania do Firestore
 @app.route("/dodaj", methods=["POST"])
 def dodaj():
@@ -32,8 +39,11 @@ def dodaj():
         
         print("Otrzymano dane od:", client_name)
         
-        # Zapis do Firestore (kolekcja "users"), nadpisując dane pod nazwą klienta
-        db.collection("users").document(client_name).set(data)
+        # Sortowanie danych przed zapisaniem
+        sorted_data = {key: data[key] for key in ordered_keys if key in data}
+        
+        # Zapis do Firestore (kolekcja "users")
+        db.collection("users").document(client_name).set(sorted_data)
         
         return jsonify({"message": "Dane zapisane!", "id": client_name})
     
