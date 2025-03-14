@@ -16,7 +16,7 @@ db = firestore.client()
 
 @app.route("/", methods=["GET"])
 def home():
-    return render_template("index.html")  # Wyświetlenie strony HTML
+    return render_template("index.html")  # Renderowanie strony głównej
 
 @app.route("/dodaj", methods=["POST"])
 def dodaj():
