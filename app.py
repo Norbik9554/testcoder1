@@ -37,12 +37,17 @@ def dodaj():
                         "CPU Processor", "Cores", "Threads", "GPU Processor", "RAM (Gb)", 
                         "Disks", "Type Connection", "IP Address"]
 
-        # Tworzymy nowy słownik tylko z istniejących danych
-        sorted_data = {key: data.get(key, "Brak danych") for key in ordered_keys}
+        # Pobranie danych systemowych
+        system_info = data.get("system_info", {})
 
-        # Dodajemy resztę pól, które były w oryginalnym `data`, ale nie były w `ordered_keys`
+        # Tworzymy nowy słownik, priorytet mają dane z `system_info`
+        sorted_data = {}
+        for key in ordered_keys:
+            sorted_data[key] = system_info.get(key, data.get(key, "Brak danych"))
+
+        # Dodajemy dodatkowe pola (np. `location`, `client_name`)
         for key in data:
-            if key not in ordered_keys:
+            if key not in ordered_keys and key != "system_info":
                 sorted_data[key] = data[key]
 
         # Zapis do Firestore (nadpisując dane pod nazwą klienta)
@@ -58,23 +63,28 @@ def dodaj():
 def test():
     test_data = {
         "client_name": "Test_Client",
-        "Computer Name": "Test-PC",
-        "Hostname": "Test-Host",
-        "System": "Windows",
-        "Release": "10",
-        "Architecture": "x64",
-        "CPU Processor": "Intel i5",
-        "Cores": 4,
-        "Threads": 8,
-        "GPU Processor": "RTX 4060",
-        "RAM (Gb)": 16,
-        "Disks": "SSD 1TB",
-        "Type Connection": "WiFi",
-        "IP Address": "192.168.1.100",
-        "Custom Field": "Extra data"
+        "system_info": {
+            "Computer Name": "Test-PC",
+            "Hostname": "Test-Host",
+            "System": "Windows",
+            "Release": "10",
+            "Architecture": "x64",
+            "CPU Processor": "Intel i5",
+            "Cores": 4,
+            "Threads": 8,
+            "GPU Processor": "RTX 4060",
+            "RAM (Gb)": 16,
+            "Disks": "SSD 1TB",
+            "Type Connection": "WiFi",
+            "IP Address": "192.168.1.100"
+        },
+        "location": {
+            "City": "Gdansk",
+            "Country": "Poland"
+        }
     }
     
-    response = db.collection("users").document(test_data["client_name"]).set(test_data)
+    db.collection("users").document(test_data["client_name"]).set(test_data)
     return jsonify({"message": "Testowe dane zapisane!", "id": test_data["client_name"]})
 
 if __name__ == "__main__":
