@@ -40,18 +40,21 @@ def dodaj():
         # Pobranie danych systemowych
         system_info = data.get("system_info", {})
 
-        # Tworzymy nowy słownik, priorytet mają dane z `system_info`
-        sorted_data = {}
-        for key in ordered_keys:
-            sorted_data[key] = system_info.get(key, data.get(key, "Brak danych"))
+        # Tworzymy nowy słownik w kolejności
+        sorted_info = {key: system_info.get(key, "Brak danych") for key in ordered_keys}
 
-        # Dodajemy dodatkowe pola (np. `location`, `client_name`)
-        for key in data:
-            if key not in ordered_keys and key != "system_info":
-                sorted_data[key] = data[key]
+        # Finalna struktura JSON
+        final_data = {
+            "client_name": client_name,
+            "info": sorted_info  # Wszystkie dane systemowe w jednej sekcji
+        }
+
+        # Dodajemy dodatkowe pola (np. `location`), jeśli są obecne
+        if "location" in data:
+            final_data["location"] = data["location"]
 
         # Zapis do Firestore (nadpisując dane pod nazwą klienta)
-        db.collection("users").document(client_name).set(sorted_data)
+        db.collection("users").document(client_name).set(final_data)
 
         return jsonify({"message": "Dane zapisane!", "id": client_name})
 
