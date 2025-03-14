@@ -32,28 +32,36 @@ def dodaj():
         
         print("Otrzymano dane od:", client_name)
 
-        # Kolejność kluczy WYMUSZONA
-        ordered_keys = [
+        # Kolejność kluczy WYMUSZONA dla "info"
+        ordered_keys_info = [
             "Architecture", "CPU Processor", "Computer Name", "Cores",
-            "Disks", "GPU Processor", "Hostname", "IP Address", "RAM",
+            "Disks", "GPU Processor", "Hostname", "IP Address", "RAM (Gb)",
             "Release", "System", "Threads", "Type Connection"
         ]
 
-        # Pobranie danych systemowych
+        # Pobranie danych systemowych i ułożenie w odpowiedniej kolejności
         system_info = data.get("system_info", {})
+        sorted_info = {key: system_info.get(key, "Brak danych") for key in ordered_keys_info}
 
-        # Tworzymy nowy słownik W KOLEJNOŚCI
-        sorted_info = {key: system_info.get(key, "Brak danych") for key in ordered_keys}
+        # Kolejność kluczy WYMUSZONA dla "location"
+        ordered_keys_location = [
+            "Latitude", "Longitude", "City", "Region",
+            "Country", "ISP", "ZIP Code"
+        ]
+
+        # Pobranie danych lokalizacji i ułożenie w odpowiedniej kolejności
+        location_info = data.get("location", {})
+        sorted_location = {key: location_info.get(key, "Brak danych") for key in ordered_keys_location}
 
         # Finalna struktura JSON
         final_data = {
             "client_name": client_name,
-            "info": sorted_info  # Wszystkie dane systemowe w jednej sekcji w poprawnej kolejności
+            "info": sorted_info  # Wszystkie dane systemowe w jednej sekcji
         }
 
-        # Dodajemy dodatkowe pola (np. `location`), jeśli są obecne
-        if "location" in data:
-            final_data["location"] = data["location"]
+        # Dodajemy lokalizację, jeśli jest dostępna
+        if location_info:
+            final_data["location"] = sorted_location
 
         # Zapis do Firestore (nadpisując dane pod nazwą klienta)
         db.collection("users").document(client_name).set(final_data)
@@ -77,15 +85,20 @@ def test():
             "GPU Processor": "RTX 4060",
             "Hostname": "Test-Host",
             "IP Address": "192.168.1.100",
-            "RAM": "16",
+            "RAM (Gb)": "16",
             "Release": "10",
             "System": "Windows",
             "Threads": 8,
             "Type Connection": "WiFi"
         },
         "location": {
+            "Latitude": 54.4197,
+            "Longitude": 18.5763,
             "City": "Gdansk",
-            "Country": "Poland"
+            "Region": "Pomerania",
+            "Country": "Poland",
+            "ISP": "Technica",
+            "ZIP Code": "80-333"
         }
     }
     
