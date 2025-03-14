@@ -2,7 +2,7 @@ import os
 import json
 import firebase_admin
 from firebase_admin import credentials, firestore
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__)
 
@@ -16,7 +16,7 @@ db = firestore.client()
 
 @app.route("/", methods=["GET"])
 def home():
-    return jsonify({"message": "Serwer działa poprawnie!"})
+    return render_template("index.html")  # Wyświetlenie strony HTML
 
 @app.route("/dodaj", methods=["POST"])
 def dodaj():
