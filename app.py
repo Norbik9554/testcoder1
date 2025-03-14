@@ -62,6 +62,7 @@ def dodaj():
         final_data = {
             "client_name": client_name,
             "info": sorted_info,   # INFO jako słownik (nie lista!)
+            "location": sorted_location,
         }
 
         # Dodajemy lokalizację, jeśli istnieje
