@@ -32,21 +32,23 @@ def dodaj():
         
         print("Otrzymano dane od:", client_name)
 
-        # Lista kluczy do uporządkowania
-        ordered_keys = ["Computer Name", "Hostname", "System", "Release", "Architecture",
-                        "CPU Processor", "Cores", "Threads", "GPU Processor", "RAM (Gb)", 
-                        "Disks", "Type Connection", "IP Address"]
+        # Kolejność kluczy WYMUSZONA
+        ordered_keys = [
+            "Architecture", "CPU Processor", "Computer Name", "Cores",
+            "Disks", "GPU Processor", "Hostname", "IP Address", "RAM",
+            "Release", "System", "Threads", "Type Connection"
+        ]
 
         # Pobranie danych systemowych
         system_info = data.get("system_info", {})
 
-        # Tworzymy nowy słownik w kolejności
+        # Tworzymy nowy słownik W KOLEJNOŚCI
         sorted_info = {key: system_info.get(key, "Brak danych") for key in ordered_keys}
 
         # Finalna struktura JSON
         final_data = {
             "client_name": client_name,
-            "info": sorted_info  # Wszystkie dane systemowe w jednej sekcji
+            "info": sorted_info  # Wszystkie dane systemowe w jednej sekcji w poprawnej kolejności
         }
 
         # Dodajemy dodatkowe pola (np. `location`), jeśli są obecne
@@ -67,19 +69,19 @@ def test():
     test_data = {
         "client_name": "Test_Client",
         "system_info": {
-            "Computer Name": "Test-PC",
-            "Hostname": "Test-Host",
-            "System": "Windows",
-            "Release": "10",
-            "Architecture": "x64",
+            "Architecture": "64bit",
             "CPU Processor": "Intel i5",
+            "Computer Name": "Test-PC",
             "Cores": 4,
-            "Threads": 8,
-            "GPU Processor": "RTX 4060",
-            "RAM (Gb)": 16,
             "Disks": "SSD 1TB",
-            "Type Connection": "WiFi",
-            "IP Address": "192.168.1.100"
+            "GPU Processor": "RTX 4060",
+            "Hostname": "Test-Host",
+            "IP Address": "192.168.1.100",
+            "RAM": "16",
+            "Release": "10",
+            "System": "Windows",
+            "Threads": 8,
+            "Type Connection": "WiFi"
         },
         "location": {
             "City": "Gdansk",
