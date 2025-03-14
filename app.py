@@ -21,7 +21,7 @@ def home():
 # Lista uporządkowanych kluczy
 ordered_keys = [
     "Computer Name", "Hostname", "System", "Release", "Architecture",
-    "CPU Processor", "Cores", "Threads", "GPU Processor", "RAM (Gb)",
+    "CPU Processor", "Cores", "Threads", "GPU Processor", "RAM",
     "Disks", "Type Connection", "IP Address"
 ]
 
