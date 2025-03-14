@@ -34,7 +34,7 @@ def dodaj():
         # Kolejność kluczy dla "info"
         ordered_keys_info = [
             "Architecture", "CPU Processor", "Computer Name", "Cores",
-            "Disks", "GPU Processor", "Hostname", "IP Address", "RAM (Gb)",
+            "Disks", "GPU Processor", "Hostname", "IP Address", "RAM",
             "Release", "System", "Threads", "Type Connection"
         ]
 
