@@ -18,16 +18,19 @@ db = firestore.client()
 def home():
     return jsonify({"message": "Serwer działa poprawnie!"})
 
-# Endpoint do odbierania danych od użytkownika i zapisywania do Firestore
-@app.route("/save", methods=["POST"])
-def save_data():
+# Endpoint do odbierania danych i zapisywania do Firestore
+@app.route("/dodaj", methods=["POST"])
+def dodaj():
     try:
-        data = request.json  # Pobranie danych od użytkownika
+        data = request.json  # Pobranie danych z żądania
         if not data:
             return jsonify({"error": "Brak danych"}), 400
 
+        print("Otrzymano dane:", data)
+
         # Zapis do Firestore (kolekcja "users")
         doc_ref = db.collection("users").add(data)
+
         return jsonify({"message": "Dane zapisane!", "id": doc_ref[1].id})
 
     except Exception as e:
